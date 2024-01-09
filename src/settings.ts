@@ -67,6 +67,10 @@ app.get('/videos', (req: Request, res: Response) => {
   res.send(videos)
 })
 
+app.get('/', (req: Request, res: Response) => {
+  res.send('start page')
+})
+
 app.get('/videos/:id', (req: Request<Param>, res: Response) => {
   const id = +req.params.id
 
