@@ -67,10 +67,6 @@ app.get('/videos', (req: Request, res: Response) => {
   res.send(videos)
 })
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('start page')
-})
-
 app.get('/videos/:id', (req: Request<Param>, res: Response) => {
   const id = +req.params.id
 
@@ -180,9 +176,12 @@ app.put('/videos/:id', (req: RequestWithBodyAndParams<Param, UpdateVideoType>, r
 
   const dateCheking = new Date(publicationDate)
 
-  if (isNaN(dateCheking.getMonth()) || isNaN(dateCheking.getDay()) || isNaN(dateCheking.getFullYear())) {
+  if(typeof publicationDate != 'string') {
     errors.errorsMessages.push({ message: 'Incorrect publicationDate', field: 'publicationDate' })
-  }
+  }else {
+    if (isNaN(dateCheking.getMonth()) || isNaN(dateCheking.getDay()) || isNaN(dateCheking.getFullYear())) {
+      errors.errorsMessages.push({ message: 'Incorrect publicationDate', field: 'publicationDate' })
+  }}
 
   if (errors.errorsMessages.length) {
     res.status(400).send(errors)
@@ -200,7 +199,7 @@ app.put('/videos/:id', (req: RequestWithBodyAndParams<Param, UpdateVideoType>, r
     video.availableResolutions = availableResolutions  
     
   } else {
-    res.sendStatus(400)
+    res.sendStatus(404)
     return
   }
   res.sendStatus(204)

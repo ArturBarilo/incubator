@@ -86,18 +86,6 @@ exports.app.put('/videos/:id', (req, res) => {
     if (!author || typeof author != 'string' || !author.trim() || author.trim().length > 20) {
         errors.errorsMessages.push({ message: 'Incorrect author', field: 'author' });
     }
-    // if(availableResolutions) {
-    //   if (Array.isArray(availableResolutions)) {
-    //     availableResolutions.forEach(r => {
-    //       if (!AvailableResolutions.includes(r)) {
-    //         errors.errorsMessages.push({ message: 'Incorrect availableResolutions', field: 'availableResolutions' })
-    //         return
-    //       }
-    //     })
-    //   } else {
-    //     availableResolutions = []
-    //   }
-    // }
     if (Array.isArray(availableResolutions)) {
         availableResolutions.forEach(r => {
             if (!AvailableResolutions.includes(r)) {
@@ -118,11 +106,13 @@ exports.app.put('/videos/:id', (req, res) => {
         }
     }
     const dateCheking = new Date(publicationDate);
-    if (isNaN(dateCheking.getMonth()) || isNaN(dateCheking.getDay()) || isNaN(dateCheking.getFullYear())) {
-        console.log(dateCheking.getMonth());
-        console.log(dateCheking.getDay());
-        console.log(dateCheking.getFullYear());
+    if (typeof publicationDate != 'string') {
         errors.errorsMessages.push({ message: 'Incorrect publicationDate', field: 'publicationDate' });
+    }
+    else {
+        if (isNaN(dateCheking.getMonth()) || isNaN(dateCheking.getDay()) || isNaN(dateCheking.getFullYear())) {
+            errors.errorsMessages.push({ message: 'Incorrect publicationDate', field: 'publicationDate' });
+        }
     }
     if (errors.errorsMessages.length) {
         res.status(400).send(errors);
@@ -136,21 +126,9 @@ exports.app.put('/videos/:id', (req, res) => {
         video.title = req.body.title;
         video.author = req.body.author;
         video.availableResolutions = availableResolutions;
-        // video = {
-        //   id: id,
-        //   createdAt: video.createdAt,
-        //   canBeDownloaded: canBeDownloaded,
-        //   minAgeRestriction: minAgeRestriction,
-        //   publicationDate: publicationDate,
-        //   title: title,
-        //   author: author,
-        //   availableResolutions: availableResolutions,
-        // }
-        console.log(video);
-        console.log(videos);
     }
     else {
-        res.sendStatus(400);
+        res.sendStatus(404);
         return;
     }
     res.sendStatus(204);
@@ -158,8 +136,6 @@ exports.app.put('/videos/:id', (req, res) => {
 });
 exports.app.delete('/testing/all-data', (req, res) => {
     videos.length = 0;
-    console.log('videos', videos);
-    console.log('videos.length', videos.length);
     res.sendStatus(204);
 });
 exports.app.delete('/videos/:id', (req, res) => {
