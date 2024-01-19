@@ -1,8 +1,17 @@
 import express, { Request, Response } from "express";
+import { blogRoute } from "./routes/blog-route";
+import { postRoute } from "./routes/post-route";
+import { testing } from "./routes/testing-route";
 
 export const app = express()
 
 app.use(express.json())
+
+app.use('/blogs', blogRoute)
+
+app.use('/posts', postRoute)
+
+app.use('/testing/all-data', testing)
 
 const AvailableResolutions = ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160']
 
@@ -17,7 +26,7 @@ type VideoType = {
   availableResolutions: typeof AvailableResolutions
 }
 
-const videos: VideoType[] = [{
+export const videos: VideoType[] = [{
   "id": 0,
   "title": "string",
   "author": "string",
@@ -34,7 +43,7 @@ type RequestWithBody<B> = Request<unknown, unknown, B, unknown>
 
 type RequestWithBodyAndParams<A, V> = Request<A, unknown, V, unknown>
 
-type Param = {
+export type Param = {
   id: number
 }
 
@@ -206,10 +215,10 @@ app.put('/videos/:id', (req: RequestWithBodyAndParams<Param, UpdateVideoType>, r
   return
 })
 
-app.delete('/testing/all-data', (req: Request, res: Response) => {
-  videos.length = 0
-  res.sendStatus(204)
-})
+// app.delete('/testing/all-data', (req: Request, res: Response) => {
+//   videos.length = 0
+//   res.sendStatus(204)
+// })
 
 app.delete('/videos/:id', (req: Request<Param>, res: Response) => {
   const id = +req.params.id

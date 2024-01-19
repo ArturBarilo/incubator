@@ -3,12 +3,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.app = void 0;
+exports.videos = exports.app = void 0;
 const express_1 = __importDefault(require("express"));
+const blog_route_1 = require("./routes/blog-route");
+const post_route_1 = require("./routes/post-route");
+const testing_route_1 = require("./routes/testing-route");
 exports.app = (0, express_1.default)();
 exports.app.use(express_1.default.json());
+exports.app.use('/blogs', blog_route_1.blogRoute);
+exports.app.use('/posts', post_route_1.postRoute);
+exports.app.use('/testing/all-data', testing_route_1.testing);
 const AvailableResolutions = ['P144', 'P240', 'P360', 'P480', 'P720', 'P1080', 'P1440', 'P2160'];
-const videos = [{
+exports.videos = [{
         "id": 0,
         "title": "string",
         "author": "string",
@@ -21,11 +27,11 @@ const videos = [{
         ]
     }];
 exports.app.get('/videos', (req, res) => {
-    res.send(videos);
+    res.send(exports.videos);
 });
 exports.app.get('/videos/:id', (req, res) => {
     const id = +req.params.id;
-    const video = videos.find(v => v.id == id);
+    const video = exports.videos.find(v => v.id == id);
     if (!video) {
         res.sendStatus(404);
         return;
@@ -71,7 +77,7 @@ exports.app.post('/videos', (req, res) => {
         author,
         availableResolutions
     };
-    videos.push(newVideo);
+    exports.videos.push(newVideo);
     res.status(201).send(newVideo);
 });
 exports.app.put('/videos/:id', (req, res) => {
@@ -118,7 +124,7 @@ exports.app.put('/videos/:id', (req, res) => {
         res.status(400).send(errors);
         return;
     }
-    let video = videos.find(v => v.id == id);
+    let video = exports.videos.find(v => v.id == id);
     if (video) {
         video.canBeDownloaded = req.body.canBeDownloaded;
         video.minAgeRestriction = req.body.minAgeRestriction;
@@ -134,19 +140,19 @@ exports.app.put('/videos/:id', (req, res) => {
     res.sendStatus(204);
     return;
 });
-exports.app.delete('/testing/all-data', (req, res) => {
-    videos.length = 0;
-    res.sendStatus(204);
-});
+// app.delete('/testing/all-data', (req: Request, res: Response) => {
+//   videos.length = 0
+//   res.sendStatus(204)
+// })
 exports.app.delete('/videos/:id', (req, res) => {
     const id = +req.params.id;
-    const videoIndex = videos.findIndex(v => v.id == id);
+    const videoIndex = exports.videos.findIndex(v => v.id == id);
     if (videoIndex < 0) {
         res.sendStatus(404);
         return;
     }
     else {
-        videos.splice(videoIndex, 1);
+        exports.videos.splice(videoIndex, 1);
     }
     res.sendStatus(204);
     return;
