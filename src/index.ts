@@ -1,12 +1,8 @@
+import { port, runDb } from './db/db'
 import {app} from './settings'
 
-const port = 3001
-
-app.listen(port, () => {
-    console.log(`App listen on port: ${port}`)
+app.listen(port, async () => {
+    await runDb()
 })
 
 
-
-//??? менять имя блога в посте в методе PUT ???
-// удалить console.logs
