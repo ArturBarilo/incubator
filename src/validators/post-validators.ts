@@ -11,9 +11,9 @@ const shortDescriptionValidator = body('shortDescription').isString().withMessag
 const contentValidator = body('content').isString().withMessage('content must be a string')
     .trim().isLength({ min: 1, max: 1000 }).withMessage('Incorrect content')
 
-const blogIdValidator = body('blogId').custom((value) => {
+const blogIdValidator = body('blogId').custom(async (value) => {
 
-    const blog = BlogRepository.getById(value)
+    const blog = await BlogRepository.getById(value)
 
     if (!blog) {
         throw Error('Incorrect blogId')

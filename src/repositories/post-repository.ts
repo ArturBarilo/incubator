@@ -1,54 +1,58 @@
-import { db } from "../db/db";
-import { PostType, UpdatePostType } from "../routes/post-route";
+import { postsCollection } from "../db/db";
+import { postMapper } from "../models/post/mappers/post-mapper";
+import { OutputPostType } from "../models/post/output/post-output-models";
+import { UpdatePostType } from "../routes/post-route";
 import { BlogRepository } from "./blog-repository";
+import { PostDb } from "../models/post/db/post-db";
+import { ObjectId } from "mongodb";
 
 
 export class PostRepository {
 
-    static getById(id: string) {
-        return db.posts.find((p) => p.id == id)
+    static async getAll(): Promise<OutputPostType[]> {
+        const posts = await postsCollection.find({}).toArray()
+
+        return posts.map(postMapper)
     }
 
-    static getAll() {
-        return db.posts
-    }
+    static async getById(id: string): Promise<OutputPostType | null> {
+        const post = await postsCollection.findOne({_id: new ObjectId(id)})
 
-    static createPost(createData: PostType) {
-        db.posts.push(createData)
-
-        return createData
-    }
-
-    static updatePost(id: string, infoForUpdatePost: UpdatePostType) {
-
-        const postForUpdate = db.posts.find((p) => p.id == id)
-
-        const blog = BlogRepository.getById(infoForUpdatePost.blogId)
-
-        if (postForUpdate && blog) {
-            postForUpdate.title = infoForUpdatePost.title
-            postForUpdate.shortDescription = infoForUpdatePost.shortDescription
-            postForUpdate.content = infoForUpdatePost.content
-            postForUpdate.blogId = infoForUpdatePost.blogId
-            postForUpdate.blogName = blog.name
-
-            return true
-        } else {
-            return false
+        if (!post) {
+            return null
         }
 
+        return postMapper(post)
     }
 
-    static deletePost(id: string) {
+    static async createPost(createData: PostDb): Promise<string> {
+        const res = await postsCollection.insertOne(createData)
 
-        const postIndex = db.posts.findIndex(p => p.id == id)
+        return res.insertedId.toString()
+    }
 
-        if (postIndex < 0) {
-            return false
-        } else {
-            db.posts.splice(postIndex, 1)
-            return true
+    static async updatePost(id: string, infoForUpdatePost: UpdatePostType): Promise<boolean> {
+        const blog = await BlogRepository.getById(infoForUpdatePost.blogId)
+
+        if(blog) {
+            const res = await postsCollection.updateOne({_id: new ObjectId(id)}, {
+                $set: {
+                    title: infoForUpdatePost.title,
+                    shortDescription: infoForUpdatePost.shortDescription,
+                    content: infoForUpdatePost.content,
+                    blogId: infoForUpdatePost.blogId,
+                    blogName: blog.name
+                }
+            })
+
+            return !!res.matchedCount
         }
+        return false
     }
 
+    static async deletePost(id: string): Promise<boolean> {
+        const res = await postsCollection.deleteOne({_id: new ObjectId(id)})
+
+        return !!res.deletedCount.toString()
+    }
 }

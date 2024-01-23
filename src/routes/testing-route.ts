@@ -3,8 +3,8 @@ import { TestingRepository } from "../repositories/testing-repository";
 
 export const testing = Router({})
 
-testing.delete('/', (req, res) => {
-    TestingRepository.deleteAll()
+testing.delete('/', async (req, res) => {
+    await TestingRepository.deleteAll()
     res.sendStatus(204)
     return
 })

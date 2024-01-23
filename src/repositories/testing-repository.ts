@@ -1,11 +1,14 @@
-import { db } from "../db/db";
+import { blogsCollection, database, postsCollection } from "../db/db"
+
 
 export class TestingRepository {
 
-    static deleteAll() {
-        // db.blogs = []
-        // db.posts = []
-        return 
+    static async deleteAll() {
+        await blogsCollection.deleteMany({})
+        await postsCollection.deleteMany({})
+
+        // await database.dropDatabase()
+        return
     }
     
 }
