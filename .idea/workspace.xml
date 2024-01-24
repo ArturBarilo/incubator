@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09f0cac9-a546-4885-99fc-1a9320305002" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/dist/common.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/models/blog/input/query-blog-input-model.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/dist/repositories/blog-query-repository.js" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/common.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/models/blog/input/query-blog-input-model.ts" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/src/repositories/blog-query-repository.ts" afterDir="false" />
@@ -71,7 +74,7 @@
       <workItem from="1705784315054" duration="3247000" />
       <workItem from="1705925624617" duration="904000" />
       <workItem from="1705926610258" duration="1709000" />
-      <workItem from="1705931390298" duration="30841000" />
+      <workItem from="1705931390298" duration="31287000" />
     </task>
     <servers />
   </component>
