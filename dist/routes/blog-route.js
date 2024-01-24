@@ -15,9 +15,18 @@ const auth_middleware_1 = require("../middlewares/auth/auth-middleware");
 const blog_validators_1 = require("../validators/blog-validators");
 const blog_repository_1 = require("../repositories/blog-repository");
 const mongodb_1 = require("mongodb");
+const blog_query_repository_1 = require("../repositories/blog-query-repository");
 exports.blogRoute = (0, express_1.Router)({});
 exports.blogRoute.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const blogs = yield blog_repository_1.BlogRepository.getAll();
+    var _a, _b, _c;
+    const sortData = {
+        searchNameTerm: (_a = req.query.searchNameTerm) !== null && _a !== void 0 ? _a : null,
+        sortBy: (_b = req.query.sortBy) !== null && _b !== void 0 ? _b : 'createdAt',
+        sortDirection: (_c = req.query.sortDirection) !== null && _c !== void 0 ? _c : 'desc',
+        pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+        pageSize: req.query.pageSize ? +req.query.pageSize : 10
+    };
+    const blogs = yield blog_query_repository_1.BlogQueryRepository.getAll(sortData);
     res.status(200).send(blogs);
 }));
 exports.blogRoute.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -26,7 +35,7 @@ exports.blogRoute.get('/:id', (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.sendStatus(404);
         return;
     }
-    const blog = yield blog_repository_1.BlogRepository.getById(id);
+    const blog = yield blog_query_repository_1.BlogQueryRepository.getById(id);
     if (!blog) {
         res.sendStatus(404);
         return;
@@ -43,7 +52,7 @@ exports.blogRoute.post('/', auth_middleware_1.authMiddleware, (0, blog_validator
         isMembership: false
     };
     const createdBlogId = yield blog_repository_1.BlogRepository.createBlog(newBlog);
-    const blog = yield blog_repository_1.BlogRepository.getById(createdBlogId);
+    const blog = yield blog_query_repository_1.BlogQueryRepository.getById(createdBlogId);
     if (!blog) {
         res.sendStatus(404);
         return;
@@ -57,7 +66,7 @@ exports.blogRoute.put('/:id', auth_middleware_1.authMiddleware, (0, blog_validat
         res.sendStatus(404);
         return;
     }
-    const blog = yield blog_repository_1.BlogRepository.getById(id);
+    const blog = yield blog_query_repository_1.BlogQueryRepository.getById(id);
     if (!blog) {
         res.sendStatus(404);
         return;
@@ -77,7 +86,7 @@ exports.blogRoute.delete('/:id', auth_middleware_1.authMiddleware, (req, res) =>
         res.sendStatus(404);
         return;
     }
-    const blog = yield blog_repository_1.BlogRepository.getById(id);
+    const blog = yield blog_query_repository_1.BlogQueryRepository.getById(id);
     if (!blog) {
         res.sendStatus(404);
         return;

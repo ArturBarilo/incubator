@@ -6,6 +6,9 @@ import { Request, Response } from "express";
 import { OutputBlogType } from "../models/blog/output/blog-output-models";
 import { ObjectId } from "mongodb";
 import { BlogDb } from "../models/blog/db/blog-db";
+import { RequestWithQuery } from "../common";
+import { QueryBlogInputModel } from "../models/blog/input/query-blog-input-model";
+import { BlogQueryRepository } from "../repositories/blog-query-repository";
 
 
 export const blogRoute = Router({})
@@ -16,8 +19,16 @@ export type UpdateBlogType = {
     websiteUrl: string
 }
 
-blogRoute.get('/', async (req: Request, res: Response<OutputBlogType[]>) => {
-    const blogs = await BlogRepository.getAll()
+blogRoute.get('/', async (req: RequestWithQuery<QueryBlogInputModel>, res: Response<OutputBlogType[]>) => {
+    const sortData = {
+        searchNameTerm: req.query.searchNameTerm ?? null,
+        sortBy: req.query.sortBy ?? 'createdAt',
+        sortDirection: req.query.sortDirection ?? 'desc',
+        pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+        pageSize: req.query.pageSize ? +req.query.pageSize : 10
+    }
+
+    const blogs = await BlogQueryRepository.getAll(sortData)
 
     res.status(200).send(blogs)
 })
@@ -30,7 +41,7 @@ blogRoute.get('/:id', async (req: Request, res: Response) => {
         return
     }
 
-    const blog = await BlogRepository.getById(id)
+    const blog = await BlogQueryRepository.getById(id)
 
     if (!blog) {
         res.sendStatus(404)
@@ -53,7 +64,7 @@ blogRoute.post('/', authMiddleware, blogValidation(), async (req: Request, res: 
 
     const createdBlogId = await BlogRepository.createBlog(newBlog)
 
-    const blog = await BlogRepository.getById(createdBlogId)
+    const blog = await BlogQueryRepository.getById(createdBlogId)
 
     if(!blog) {
         res.sendStatus(404)
@@ -72,7 +83,7 @@ blogRoute.put('/:id', authMiddleware, blogValidation(), async (req: Request, res
         return
     }
 
-    const blog = await BlogRepository.getById(id)
+    const blog = await BlogQueryRepository.getById(id)
 
     if(!blog) {
         res.sendStatus(404)
@@ -100,7 +111,7 @@ blogRoute.delete('/:id', authMiddleware, async (req: Request, res: Response) => 
         return
     }
 
-    const blog = await BlogRepository.getById(id)
+    const blog = await BlogQueryRepository.getById(id)
 
     if(!blog) {
         res.sendStatus(404)

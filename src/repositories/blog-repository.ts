@@ -8,22 +8,6 @@ import { UpdateBlogType } from "../routes/blog-route";
 
 export class BlogRepository {
 
-    static async getAll(): Promise<OutputBlogType[]> {
-        const blogs = await blogsCollection.find({}).toArray()
-
-        return blogs.map(blogMapper)
-    }
-
-    static async getById(id: string): Promise<OutputBlogType | null> {
-        const blog = await blogsCollection.findOne({_id: new ObjectId(id)})
-
-        if (!blog) {
-            return null
-        }
-
-        return blogMapper(blog)
-    }
-
     static async createBlog(createData: BlogDb): Promise<string> {
         const res = await blogsCollection.insertOne(createData)
 
@@ -41,7 +25,6 @@ export class BlogRepository {
 
         return !!res.matchedCount
     }
-
 
     static async deleteBlog(id: string): Promise<boolean> {
         const res = await blogsCollection.deleteOne({_id: new ObjectId(id)})

@@ -12,23 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BlogRepository = void 0;
 const mongodb_1 = require("mongodb");
 const db_1 = require("../db/db");
-const blog_mapper_1 = require("../models/blog/mappers/blog-mapper");
 class BlogRepository {
-    static getAll() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const blogs = yield db_1.blogsCollection.find({}).toArray();
-            return blogs.map(blog_mapper_1.blogMapper);
-        });
-    }
-    static getById(id) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const blog = yield db_1.blogsCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
-            if (!blog) {
-                return null;
-            }
-            return (0, blog_mapper_1.blogMapper)(blog);
-        });
-    }
     static createBlog(createData) {
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield db_1.blogsCollection.insertOne(createData);
