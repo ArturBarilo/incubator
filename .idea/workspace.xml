@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="09f0cac9-a546-4885-99fc-1a9320305002" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/dist/common.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dist/models/blog/input/query-blog-input-model.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/dist/repositories/blog-query-repository.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/common.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/blog/input/query-blog-input-model.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/repositories/blog-query-repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/repositories/blog-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/repositories/blog-repository.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/routes/blog-route.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/routes/blog-route.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/blog-repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/blog-repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/blog-route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/blog-route.ts" afterDir="false" />
-    </list>
+    <list default="true" id="09f0cac9-a546-4885-99fc-1a9320305002" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
