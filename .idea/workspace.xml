@@ -2,28 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09f0cac9-a546-4885-99fc-1a9320305002" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/models/blog/db/blog-db.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/blog/mappers/blog-mapper.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/blog/output/blog-output-models.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/post/db/post-db.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/post/mappers/post-mapper.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/post/output/post-output-models.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/db/db.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/db/db.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/repositories/blog-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/repositories/blog-repository.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/repositories/post-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/repositories/post-repository.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/repositories/testing-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/repositories/testing-repository.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/routes/blog-route.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/routes/blog-route.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/routes/testing-route.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/routes/testing-route.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dist/validators/post-validators.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/validators/post-validators.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db/db.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/db.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/blog-repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/blog-repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/post-repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/post-repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/repositories/testing-repository.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/repositories/testing-repository.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/blog-route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/blog-route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/post-route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/post-route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/testing-route.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/testing-route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/validators/post-validators.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/validators/post-validators.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,9 +43,14 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="nodejs_package_manager_path" value="yarn" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
     <property name="ts.external.directory.path" value="C:\Program Files\JetBrains\WebStorm 2021.2.2\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="theme" />
+    </option>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
