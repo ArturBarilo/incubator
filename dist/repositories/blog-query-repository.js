@@ -13,6 +13,7 @@ exports.BlogQueryRepository = void 0;
 const mongodb_1 = require("mongodb");
 const db_1 = require("../db/db");
 const blog_mapper_1 = require("../models/blog/mappers/blog-mapper");
+const post_mapper_1 = require("../models/post/mappers/post-mapper");
 class BlogQueryRepository {
     static getAll(sortData) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,7 +35,38 @@ class BlogQueryRepository {
                 .toArray();
             const totalCount = yield db_1.blogsCollection.countDocuments(filter);
             const pagesCount = Math.ceil(totalCount / pageSize);
-            return blogs.map(blog_mapper_1.blogMapper);
+            return {
+                pagesCount,
+                page: pageNumber,
+                pageSize,
+                totalCount,
+                items: blogs.map(blog_mapper_1.blogMapper)
+            };
+        });
+    }
+    static getPostsToBlog(sortData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { sortBy, sortDirection, pageNumber, pageSize, blogId } = sortData;
+            const blog = yield db_1.blogsCollection.findOne({ _id: new mongodb_1.ObjectId(blogId) });
+            if (!blog) {
+                return null;
+            }
+            const filter = { blogId: blogId };
+            const posts = yield db_1.postsCollection
+                .find(filter)
+                .sort(sortBy, sortDirection)
+                .skip((pageNumber - 1) * pageSize)
+                .limit(pageSize)
+                .toArray();
+            const totalCount = yield db_1.postsCollection.countDocuments(filter);
+            const pagesCount = Math.ceil(totalCount / pageSize);
+            return {
+                pagesCount,
+                page: pageNumber,
+                pageSize,
+                totalCount,
+                items: posts.map(post_mapper_1.postMapper)
+            };
         });
     }
     static getById(id) {

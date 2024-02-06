@@ -13,6 +13,15 @@ exports.BlogRepository = void 0;
 const mongodb_1 = require("mongodb");
 const db_1 = require("../db/db");
 class BlogRepository {
+    static getById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const blog = yield db_1.blogsCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
+            if (!blog) {
+                return null;
+            }
+            return blog;
+        });
+    }
     static createBlog(createData) {
         return __awaiter(this, void 0, void 0, function* () {
             const res = yield db_1.blogsCollection.insertOne(createData);

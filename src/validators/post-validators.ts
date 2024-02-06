@@ -1,6 +1,7 @@
 import { body } from "express-validator";
 import { BlogRepository } from "../repositories/blog-repository";
 import { inputValidationMiddleware } from "../middlewares/inputValidation/input-validation-middleware";
+import { BlogQueryRepository } from "../repositories/blog-query-repository";
 
 const titleValidator = body('title').isString().withMessage('title must be a string')
     .trim().isLength({ min: 1, max: 30 }).withMessage('Incorrect title')
@@ -13,7 +14,7 @@ const contentValidator = body('content').isString().withMessage('content must be
 
 const blogIdValidator = body('blogId').custom(async (value) => {
 
-    const blog = await BlogRepository.getById(value)
+    const blog = await BlogQueryRepository.getById(value)
 
     if (!blog) {
         throw Error('Incorrect blogId')
@@ -25,3 +26,5 @@ const blogIdValidator = body('blogId').custom(async (value) => {
     .withMessage('Incorrect blogId')
 
 export const postValidation = () => [titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, inputValidationMiddleware]
+
+export const createPostFromBlogValidation = () => [titleValidator, shortDescriptionValidator, contentValidator, inputValidationMiddleware]

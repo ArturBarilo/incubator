@@ -8,9 +8,20 @@ import { UpdateBlogType } from "../routes/blog-route";
 
 export class BlogRepository {
 
+    static async getById(id: string): Promise<BlogDb | null> {
+        const blog = await blogsCollection.findOne({_id: new ObjectId(id)})
+
+        if (!blog) {
+            return null
+        }
+
+        return blog
+    }
+
     static async createBlog(createData: BlogDb): Promise<string> {
         const res = await blogsCollection.insertOne(createData)
 
+        
         return res.insertedId.toString()
     }
 

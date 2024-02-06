@@ -7,6 +7,13 @@ import { postValidation } from "../validators/post-validators";
 import { OutputPostType } from "../models/post/output/post-output-models";
 import { ObjectId } from "mongodb";
 import { PostDb } from "../models/post/db/post-db";
+import { BlogQueryRepository } from "../repositories/blog-query-repository";
+import { PostQueryRepository } from "../repositories/post-query-repository";
+import { PostService } from "../services/post-service";
+import { CreatePostModel } from "../models/post/input/create-post-model";
+import {Pagination, RequestWithQuery } from "../common";
+import { QueryPostInputModel } from "../models/post/input/query-post-input-model";
+import { OutputBlogType } from "../models/blog/output/blog-output-models";
 
 
 export const postRoute = Router({})
@@ -18,11 +25,17 @@ export type UpdatePostType = {
     blogId: string,
 }
 
-postRoute.get('/', async (req: Request, res: Response<OutputPostType[]>) => {
-    const posts = await PostRepository.getAll()
+postRoute.get('/', async (req: RequestWithQuery<QueryPostInputModel>, res: Response<Pagination<OutputPostType>>) => {
+    const sortData = {
+        sortBy: req.query.sortBy ?? 'createdAt',
+        sortDirection: req.query.sortDirection ?? 'desc',
+        pageNumber: req.query.pageNumber ? +req.query.pageNumber : 1,
+        pageSize: req.query.pageSize ? +req.query.pageSize : 10
+    }
+
+    const posts = await PostQueryRepository.getAll(sortData)
 
     res.status(200).send(posts)
-    return
 })
 
 postRoute.get('/:id', async (req: Request, res: Response) => {
@@ -33,7 +46,7 @@ postRoute.get('/:id', async (req: Request, res: Response) => {
         return
     }
 
-    const post = await PostRepository.getById(id)
+    const post = await PostQueryRepository.getById(id)
 
     if (!post) {
         res.sendStatus(404)
@@ -44,32 +57,16 @@ postRoute.get('/:id', async (req: Request, res: Response) => {
 })
 
 postRoute.post('/', authMiddleware, postValidation(), async (req: Request, res: Response) => {
-    const { title, shortDescription, content, blogId } = req.body
-    const blogName = await BlogRepository.getById(blogId)
+    const createPostModel: CreatePostModel = req.body
 
-    if(blogName) {
-        const newPost: PostDb = {
-            title,
-            shortDescription,
-            content,
-            blogId,
-            blogName: blogName.name,
-            createdAt: (new Date()).toISOString()
-        }
-        const createdPostId = await PostRepository.createPost(newPost)
+    const post = await PostService.createPost(createPostModel)
 
-        const post = await PostRepository.getById(createdPostId)
-
-        if(!post) {
-            res.sendStatus(404)
-            return
-        }
-        res.status(201).send(post)
+    if(!post) {
+        res.sendStatus(404)
         return
     }
-
-    res.sendStatus(404)
-    return
+    
+    res.status(201).send(post)
 })
 
 postRoute.put('/:id', authMiddleware, postValidation(), async (req: Request, res: Response) => {
@@ -79,19 +76,12 @@ postRoute.put('/:id', authMiddleware, postValidation(), async (req: Request, res
         res.sendStatus(404)
         return
     }
-
-    const post = await PostRepository.getById(id)
-
-    if(!post) {
-        res.sendStatus(404)
-        return
-    }
-
+    
     const infoForUpdatePost: UpdatePostType = req.body
+    
+    const postIsUpdated = await PostService.updatePost(id, infoForUpdatePost)
 
-    const updatedPost = await PostRepository.updatePost(id, infoForUpdatePost)
-
-    if (!updatedPost) {
+    if(!postIsUpdated) {
         res.sendStatus(404)
         return
     }
@@ -108,16 +98,9 @@ postRoute.delete('/:id', authMiddleware, async (req: Request, res: Response) => 
         return
     }
 
-    const existingPost = await PostRepository.getById(id)
+    const deletedPost = await PostService.deletePost(id)
 
-    if(!existingPost) {
-        res.sendStatus(404)
-        return
-    }
-
-    const post = await PostRepository.deletePost(id)
-
-    if (!post) {
+    if(!deletedPost) {
         res.sendStatus(404)
         return
     }

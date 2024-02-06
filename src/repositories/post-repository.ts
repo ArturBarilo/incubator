@@ -5,25 +5,10 @@ import { UpdatePostType } from "../routes/post-route";
 import { BlogRepository } from "./blog-repository";
 import { PostDb } from "../models/post/db/post-db";
 import { ObjectId } from "mongodb";
+import { BlogQueryRepository } from "./blog-query-repository";
 
 
 export class PostRepository {
-
-    static async getAll(): Promise<OutputPostType[]> {
-        const posts = await postsCollection.find({}).toArray()
-
-        return posts.map(postMapper)
-    }
-
-    static async getById(id: string): Promise<OutputPostType | null> {
-        const post = await postsCollection.findOne({_id: new ObjectId(id)})
-
-        if (!post) {
-            return null
-        }
-
-        return postMapper(post)
-    }
 
     static async createPost(createData: PostDb): Promise<string> {
         const res = await postsCollection.insertOne(createData)
@@ -32,7 +17,7 @@ export class PostRepository {
     }
 
     static async updatePost(id: string, infoForUpdatePost: UpdatePostType): Promise<boolean> {
-        const blog = await BlogRepository.getById(infoForUpdatePost.blogId)
+        const blog = await BlogQueryRepository.getById(infoForUpdatePost.blogId)
 
         if(blog) {
             const res = await postsCollection.updateOne({_id: new ObjectId(id)}, {
@@ -51,6 +36,10 @@ export class PostRepository {
     }
 
     static async deletePost(id: string): Promise<boolean> {
+        const post = await postsCollection.findOne({_id: new ObjectId(id)})
+
+        if(!post) return false
+
         const res = await postsCollection.deleteOne({_id: new ObjectId(id)})
 
         return !!res.deletedCount.toString()

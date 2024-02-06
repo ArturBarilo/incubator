@@ -9,10 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postValidation = void 0;
+exports.createPostFromBlogValidation = exports.postValidation = void 0;
 const express_validator_1 = require("express-validator");
-const blog_repository_1 = require("../repositories/blog-repository");
 const input_validation_middleware_1 = require("../middlewares/inputValidation/input-validation-middleware");
+const blog_query_repository_1 = require("../repositories/blog-query-repository");
 const titleValidator = (0, express_validator_1.body)('title').isString().withMessage('title must be a string')
     .trim().isLength({ min: 1, max: 30 }).withMessage('Incorrect title');
 const shortDescriptionValidator = (0, express_validator_1.body)('shortDescription').isString().withMessage('shortDescription must be a string')
@@ -20,7 +20,7 @@ const shortDescriptionValidator = (0, express_validator_1.body)('shortDescriptio
 const contentValidator = (0, express_validator_1.body)('content').isString().withMessage('content must be a string')
     .trim().isLength({ min: 1, max: 1000 }).withMessage('Incorrect content');
 const blogIdValidator = (0, express_validator_1.body)('blogId').custom((value) => __awaiter(void 0, void 0, void 0, function* () {
-    const blog = yield blog_repository_1.BlogRepository.getById(value);
+    const blog = yield blog_query_repository_1.BlogQueryRepository.getById(value);
     if (!blog) {
         throw Error('Incorrect blogId');
         // or return false
@@ -30,3 +30,5 @@ const blogIdValidator = (0, express_validator_1.body)('blogId').custom((value) =
     .withMessage('Incorrect blogId');
 const postValidation = () => [titleValidator, shortDescriptionValidator, contentValidator, blogIdValidator, input_validation_middleware_1.inputValidationMiddleware];
 exports.postValidation = postValidation;
+const createPostFromBlogValidation = () => [titleValidator, shortDescriptionValidator, contentValidator, input_validation_middleware_1.inputValidationMiddleware];
+exports.createPostFromBlogValidation = createPostFromBlogValidation;
