@@ -2,9 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="09f0cac9-a546-4885-99fc-1a9320305002" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/repositories/blog-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/repositories/blog-repository.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/repositories/post-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/repositories/post-repository.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dist/routes/blog-route.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/routes/blog-route.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/routes/post-route.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/routes/post-route.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/validators/post-validators.js" beforeDir="false" afterPath="$PROJECT_DIR$/dist/validators/post-validators.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
