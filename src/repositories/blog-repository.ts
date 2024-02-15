@@ -21,7 +21,6 @@ export class BlogRepository {
     static async createBlog(createData: BlogDb): Promise<string> {
         const res = await blogsCollection.insertOne(createData)
 
-        
         return res.insertedId.toString()
     }
 
