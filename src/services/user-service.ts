@@ -8,8 +8,8 @@ export class UserService {
         const { login, email, password } = createUserModel
 
         const passwordSalt = await bcrypt.genSalt(10)
-        console.log(passwordSalt)
-        const passwordHash = this._generateHash(password, passwordSalt)
+
+        const passwordHash = await this._generateHash(password, passwordSalt)
 
         const newUser = {
             login: login,
@@ -34,7 +34,14 @@ export class UserService {
 
     static async _generateHash(password: string, salt: string) {
         const hash = await bcrypt.hash(password, salt)
-        console.log(hash)
         return hash
+    }
+
+    static async deleteUser(userId: string) {
+        const user = await UserQueryRepository.getUserById(userId)
+
+        if(!user) return null
+
+        return await UserRepository.deleteUser(userId)
     }
 }

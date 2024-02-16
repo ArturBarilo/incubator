@@ -18,22 +18,19 @@ export class UserQueryRepository {
 
         let filter = {}
 
-        if(searchLoginTerm) {
-            filter = {
-                login: {
-                    $regex: searchLoginTerm,
-                    $options: 'i'
-                }
-            }
-        }
+        console.log('filter before',filter)
 
-        if(searchEmailTerm) {
-            filter = {
-                email: {
-                    $regex: searchEmailTerm,
-                    $options: 'i'
-                }
-            }
+        if(searchLoginTerm && searchEmailTerm) {
+           filter = {$or: [
+                   {email: {
+                       $regex: searchEmailTerm, $options: 'i' }},
+                   {login: {
+                       $regex: searchLoginTerm, $options: 'i'}}]
+           }
+        } else if(searchEmailTerm) {
+            filter = {email: { $regex: searchEmailTerm, $options: 'i' } }
+        } else if(searchLoginTerm) {
+            filter = {login: { $regex: searchLoginTerm, $options: 'i' } }
         }
 
         const users = await usersCollection

@@ -1,6 +1,6 @@
 export type UserDb = {
     login: string
     email: string
-    password: Promise<string>
+    password: string
     createdAt: string
 }

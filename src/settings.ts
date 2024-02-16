@@ -3,6 +3,7 @@ import { blogRoute } from "./routes/blog-route";
 import { postRoute } from "./routes/post-route";
 import { testing } from "./routes/testing-route";
 import { userRoute } from "./routes/user-route";
+import { authRoute } from "./routes/auth-route";
 
 export const app = express()
 
@@ -13,6 +14,8 @@ app.use('/blogs', blogRoute)
 app.use('/posts', postRoute)
 
 app.use('/users', userRoute)
+
+app.use('/auth', authRoute)
 
 app.use('/testing/all-data', testing)
 
