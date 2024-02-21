@@ -3,6 +3,7 @@ import {app} from './settings'
 
 app.listen(port, async () => {
     await runDb()
+    
 })
 
 
