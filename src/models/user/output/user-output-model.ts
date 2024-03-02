@@ -4,3 +4,9 @@ export type OutputUserType = {
     email: string,
     createdAt: string,
 }
+
+export type OutputUserTypeForMe = {
+    login: string,
+    email: string,
+    userId: string,
+}

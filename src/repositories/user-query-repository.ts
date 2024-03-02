@@ -1,4 +1,4 @@
-import {ObjectId, SortDirection } from "mongodb";
+import { ObjectId, SortDirection } from "mongodb";
 import { usersCollection } from "../db/db";
 import { userMapper } from "../models/user/mapper/user-mapper";
 import { OutputUserType } from "../models/user/output/user-output-model";
@@ -16,20 +16,12 @@ export class UserQueryRepository {
     static async getAll(sortData: SortData) {
         const { sortBy, sortDirection, searchEmailTerm, searchLoginTerm, pageNumber, pageSize } = sortData
 
-        let filter = {}
-
-        if(searchLoginTerm && searchEmailTerm) {
-           filter = {$or: [
-                   {email: {
-                       $regex: searchEmailTerm, $options: 'i' }},
-                   {login: {
-                       $regex: searchLoginTerm, $options: 'i'}}]
-           }
-        } else if(searchEmailTerm) {
-            filter = {email: { $regex: searchEmailTerm, $options: 'i' } }
-        } else if(searchLoginTerm) {
-            filter = {login: { $regex: searchLoginTerm, $options: 'i' } }
-        }
+        const filter = {
+            $or: [
+                { 'email': { $regex: searchEmailTerm ?? '', $options: 'i' } },
+                { 'login': { $regex: searchLoginTerm ?? '', $options: 'i' } },
+            ],
+        };
 
         const users = await usersCollection
             .find(filter)
@@ -53,9 +45,9 @@ export class UserQueryRepository {
     }
 
     static async getUserById(id: string): Promise<OutputUserType | null> {
-        const user = await usersCollection.findOne({_id: new ObjectId(id)})
+        const user = await usersCollection.findOne({ _id: new ObjectId(id) })
 
-        if(!user) return null
+        if (!user) return null
 
         return userMapper(user)
     }

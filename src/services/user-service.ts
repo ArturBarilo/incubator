@@ -44,7 +44,6 @@ export class UserService {
         if (!user) return null
 
         return user
-        
     }
 
     static async deleteUser(userId: string) {
