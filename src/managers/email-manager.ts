@@ -1,0 +1,3 @@
+//sendRegistrationMessage() {
+//emailAdapter.sendEmail()
+//}

@@ -16,7 +16,7 @@ export class CommentServise {
             content: content,
             commentatorInfo: {
                 userId: userId,
-                userLogin: user.login
+                userLogin: user.accountData.email
             },
             createdAt: new Date().toISOString(),
             postId: postId
