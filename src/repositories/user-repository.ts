@@ -11,10 +11,16 @@ export class UserRepository {
         return res.insertedId.toString()
     }
 
-    static async createUserAccount(createData: UserAccountDb): Promise<string> {
-        const res = await usersCollection.insertOne(createData)
+    // static async createUserAccount(createData: UserAccountDb): Promise<string> {
+    //     const res = await usersCollection.insertOne(createData)
+    //
+    //     return res.insertedId.toString()
+    // }
 
-        return res.insertedId.toString()
+    static async updateConfirmation(_id: ObjectId) {
+        let result = await usersCollection
+            .updateOne({_id}, {$set: {'emailConfirmation.isConfirmed': true}})
+        return result.modifiedCount === 1
     }
 
     static async deleteUser(id: string): Promise<boolean> {
@@ -22,10 +28,15 @@ export class UserRepository {
 
         return !!res.deletedCount.toString()
     }
+    static async deleteUserByEmail(email: string): Promise<boolean> {
+        const res = await usersCollection.deleteOne({ 'accountData.email': email })
+
+        return !!res.deletedCount.toString()
+    }
 
     static async findUserByLoginOrEmail(loginOrEmail: string): Promise<WithId<UserAccountDb> | null> {
         const user = await usersCollection.findOne({ $or: [{ email: loginOrEmail }, { login: loginOrEmail }] })
-        
+
         if (!user) return null
 
         return user
@@ -40,9 +51,10 @@ export class UserRepository {
     }
 
     static async checkingUniqueEmail(email: string): Promise<boolean> {
-        const notUniqueEmail = await usersCollection.findOne({email: email})
+        const checkingUniqueEmail = await usersCollection.findOne({"accountData.email": email})// accountData.email
+        console.log("checkingUniqueEmail", checkingUniqueEmail)
 
-        if(notUniqueEmail) return false
+        if(checkingUniqueEmail) return false
 
         return true
     }

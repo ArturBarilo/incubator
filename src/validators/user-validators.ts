@@ -18,7 +18,7 @@ const emailValidator = body('email').isString().withMessage('Email must be a str
 .trim().matches('^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$').withMessage('Incorrect email').custom(async (value) => {
     const checkingEmail = await UserRepository.checkingUniqueEmail(value)
         
-    if(!checkingEmail) throw Error('login already exist')
+    if(!checkingEmail) throw Error('email already exist')
 
     return true
 })

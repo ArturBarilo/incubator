@@ -32,7 +32,7 @@ userRoute.get('/', authMiddleware, async (req: RequestWithQuery<QueryUserInputMo
 userRoute.post('/', authMiddleware, createUserValidation(), async (req: RequestWithBody<CreateUserModel>, res: Response<OutputUserType>) => {
     const createUserModel: CreateUserModel = req.body
 
-    const user = await UserService.createUser(createUserModel)
+    const user = await UserService.createUserByAdmin(createUserModel)
 
     if(!user) return res.status(401)
 

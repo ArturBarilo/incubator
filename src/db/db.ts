@@ -7,7 +7,7 @@ import { CommentDb } from '../models/comment/db/comment-db';
 
 dotenv.config()
 
-export const port = 3000
+export const port = 3001
 
 const uri = process.env.MONGO_URL || 'mongodb://localhost:27017'
 

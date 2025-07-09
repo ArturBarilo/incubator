@@ -4,20 +4,30 @@ import { UserRepository } from "../repositories/user-repository";
 import { UserQueryRepository } from "../repositories/user-query-repository";
 import { usersCollection } from "../db/db";
 import { ObjectId } from "mongodb";
+import {UserAccountDb} from "../models/user/db/user-db";
+import {v4 as uuidv4} from "uuid";
+import {add} from "date-fns/add";
 
 export class UserService {
-    static async createUser(createUserModel: CreateUserModel) {
+    static async createUserByAdmin(createUserModel: CreateUserModel) {
         const { login, email, password } = createUserModel
 
         const passwordSalt = await bcrypt.genSalt(10)
 
         const passwordHash = await this._generateHash(password, passwordSalt)
 
-        const newUser = {
-            login: login,
-            email: email,
-            password: passwordHash,
-            createdAt: new Date().toISOString()
+        const newUser: UserAccountDb = {
+            accountData: {
+                userName: login,
+                email: email,
+                password: passwordHash,
+                createdAt: new Date().toISOString(),
+            },
+            emailConfirmation: {
+                isConfirmed: true,
+                confirmationCode: uuidv4(),
+                expirationDate: add(new Date(), {hours: 1, minutes: 3}),
+            }
         }
 
         const createdUserId = await UserRepository.createUser(newUser)

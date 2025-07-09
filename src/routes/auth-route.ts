@@ -3,12 +3,15 @@ import { Request, Response } from "express";
 import {RequestWithBody} from "../common";
 import {LoginInputModel} from "../models/auth/input/login-input-model";
 import {AuthService} from "../services/auth-service";
-import {loginValidation} from "../validators/auth-validators"
+import {loginValidation, resendingEmailRegistrationValidation} from "../validators/auth-validators"
 import { JWTService } from "../application/jwt-service";
 import { jwtAuthMiddleware } from "../middlewares/auth/jwt-auth-middleware"
 import { OutputUserTypeForMe } from "../models/user/output/user-output-model";
 import { CreateUserModel } from "../models/user/input/create-user-model";
 import { createUserAccountValidation, createUserValidation } from "../validators/user-validators";
+import {emailAdapter} from "../adapters/email-adapter";
+import {businessService} from "../domain/business-service";
+import {UserRepository} from "../repositories/user-repository";
 
 
 export const authRoute = Router({})
@@ -17,31 +20,30 @@ export const authRoute = Router({})
 authRoute.post('/registration', createUserAccountValidation(), async (req: RequestWithBody<CreateUserModel>, res: Response) => {
     const createUserModel: CreateUserModel = req.body
 
+
     const createUser = await AuthService.createUser(createUserModel)
 
+    if(!createUser) res.sendStatus(400)
 
+    // await businessService.sendRegistrationEmail(req.body.email)
 
-    //to businessservice
-    // const transporter = nodemailer.createTransport({
-    //     service: "mail.ru",
-    //     secure: false,
-    //     auth: {
-    //       user: "sender_app_tg@mail.ru",
-    //       pass: "46xR9jp1KKVhacDYha3Q",
-    //     },
-    // });
+    return res.sendStatus(204)
+})
 
-    // const info = await transporter.sendMail({
-    //     from: 'Artur <sender_app_tg@mail.ru>', // sender address
-    //     to: "sanitarfresh@gmail.com", // list of receivers
-    //     subject: "Hello ✔", // Subject line
-    //     // text: "Hello world?", // plain text body
-    //     html: "<b>Hello world?</b>", // html body
-    //   });
+authRoute.post('/registration-email-resending', resendingEmailRegistrationValidation(), async (req: Request, res: Response) => {
+    const email = req.body.email
 
-    // console.log(info)
-    // res.sendStatus(200)
-    // return
+    await businessService.resendRegistrationEmail(email)
+
+    return res.sendStatus(204)
+})
+
+authRoute.post('/registration-confirmation', async (req: Request, res: Response) => {
+    const result = await AuthService.confirmEmail(req.body.code)
+
+    if (result) return res.sendStatus(204)
+
+    return res.sendStatus(400)
 })
 
 authRoute.post('/login', loginValidation(), async (req: RequestWithBody<LoginInputModel>, res: Response) => {
@@ -59,7 +61,17 @@ authRoute.post('/login', loginValidation(), async (req: RequestWithBody<LoginInp
 })
 
 authRoute.get('/me', jwtAuthMiddleware, async (req: Request, res: Response)=> {
-    const currentUser = AuthService.getInfoAboutCerrentUser(req.user)
+    const currentUser = AuthService.getInfoAboutCurrentUser(req.user)
 
     return res.status(200).send(currentUser)
+})
+
+authRoute.delete('/:email', async (req: Request, res: Response) => {
+    const email = req.params.email
+
+    const deletedUser = await UserRepository.deleteUserByEmail(email)
+
+    if(deletedUser) return res.sendStatus(204)
+
+    return res.sendStatus(200)
 })

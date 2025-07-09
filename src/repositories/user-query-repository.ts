@@ -1,7 +1,8 @@
-import { ObjectId, SortDirection } from "mongodb";
+import {ObjectId, SortDirection, WithId} from "mongodb";
 import { usersCollection } from "../db/db";
 import { userMapper } from "../models/user/mapper/user-mapper";
 import { OutputUserType } from "../models/user/output/user-output-model";
+import {UserAccountDb} from "../models/user/db/user-db";
 
 type SortData = {
     sortBy: string
@@ -18,8 +19,8 @@ export class UserQueryRepository {
 
         const filter = {
             $or: [
-                { 'email': { $regex: searchEmailTerm ?? '', $options: 'i' } },
-                { 'login': { $regex: searchLoginTerm ?? '', $options: 'i' } },
+                { 'accountData.email': { $regex: searchEmailTerm ?? '', $options: 'i' } },
+                { 'accountData.userName': { $regex: searchLoginTerm ?? '', $options: 'i' } },
             ],
         };
 
@@ -50,5 +51,19 @@ export class UserQueryRepository {
         if (!user) return null
 
         return userMapper(user)
+    }
+    static async getUserByCode(code: string): Promise<WithId<UserAccountDb> | null> {
+        const user = await usersCollection.findOne({ 'emailConfirmation.confirmationCode': code })
+
+        if (!user) return null
+
+        return user
+    }
+    static async getUserByEmail(email: string): Promise<UserAccountDb | null> {
+        const user = await usersCollection.findOne({ 'accountData.email': email })
+
+        if (!user) return null
+
+        return user
     }
 }

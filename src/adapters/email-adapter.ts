@@ -1,22 +1,25 @@
 import nodemailer from "nodemailer";
 
 export const emailAdapter = {
-    async sendEmail() {
-        //непосредственная отправка письма
+    async sendEmail(email: string, subject: string, message: string) {
         const transporter = nodemailer.createTransport({
             service: "mail.ru",
             secure: false,
             auth: {
-              user: "sender_app_tg@mail.ru",
-              pass: "46xR9jp1KKVhacDYha3Q",
+                user: process.env.SENDING_EMAIL,
+                pass: process.env.PASSWORD_SENDING_EMAIL,
             },
         });
     
         const info = await transporter.sendMail({
             from: 'Artur <sender_app_tg@mail.ru>',
+            // to: email,
             to: "sanitarfresh@gmail.com",
-            subject: "Hello ✔",
-            html: "<b>Hello world?</b>",
+            subject: subject,
+            html: message,
+            // html: "<b>Hello world?</b>",
           });
+
+        return info;
     }
 }

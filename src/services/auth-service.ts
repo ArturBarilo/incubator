@@ -7,6 +7,11 @@ import { OutputUserTypeForMe } from "../models/user/output/user-output-model";
 import { UserQueryRepository } from "../repositories/user-query-repository";
 import { UserRepository } from "../repositories/user-repository";
 import bcrypt from "bcrypt";
+import { v4 as uuidv4 } from "uuid";
+import { add } from "date-fns/add";
+import {businessService} from "../domain/business-service";
+
+
 
 export class AuthService {
     static async createUser(createUserModel: CreateUserModel) {
@@ -19,14 +24,14 @@ export class AuthService {
         const newUser: UserAccountDb = {
             accountData: {
                 userName: login,
-                email: email,
+                email,
                 password: passwordHash,
                 createdAt: new Date().toISOString(),
             },
             emailConfirmation: {
                 isConfirmed: false,
-                confirmationCode: 'qwrwre',
-                expirationDate: Date,
+                confirmationCode: uuidv4(),
+                expirationDate: add(new Date(), {hours: 1, minutes: 3}),
             }
         }
 
@@ -34,14 +39,27 @@ export class AuthService {
 
         const user = await UserQueryRepository.getUserById(createdUserId)
 
-        if (!user) return null
+        if (!user) return false
 
-        return {
-            id: user.id,
-            login: user.login,
-            email: user.email,
-            createdAt: user.createdAt
-        }
+        await businessService.sendRegistrationEmail(email)
+
+        return true
+    }
+
+    static async confirmEmail(code: string) {
+        const user = await UserQueryRepository.getUserByCode(code)
+
+        if (!user) return false
+
+        if (user.emailConfirmation.confirmationCode !== code) return false
+
+        if (user.emailConfirmation.isConfirmed) return false
+
+        if(user.emailConfirmation.expirationDate < new Date()) return false
+
+        let result = await UserRepository.updateConfirmation(user._id)
+
+        return result
     }
 
     static async _generateHash(password: string, salt: string) {
@@ -54,6 +72,8 @@ export class AuthService {
 
         if (!user) return false
 
+        if (!user.emailConfirmation.isConfirmed) return false
+
         const checkingPassword = await bcrypt.compare(password, user.accountData.password)
 
         if (!checkingPassword) return false
@@ -61,7 +81,7 @@ export class AuthService {
         return user
     }
 
-    static getInfoAboutCerrentUser(userFromReq: UserDbWithId) {
+    static getInfoAboutCurrentUser(userFromReq: UserDbWithId) {
         const currentUser: OutputUserTypeForMe = {
             email: userFromReq.email,
             login: userFromReq.login,
