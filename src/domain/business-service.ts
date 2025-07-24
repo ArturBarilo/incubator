@@ -1,12 +1,6 @@
-//save to repo
-
-//...........
-// обращение к менеджеру
-//emailManager.sendRegistrationMessage(userfromrepo)
-
-import {emailAdapter} from "../adapters/email-adapter";
 import {emailManager} from "../managers/email-manager";
 import {UserQueryRepository} from "../repositories/user-query-repository";
+import {AuthService} from "../services/auth-service";
 
 export const businessService = {
     async sendRegistrationEmail(email: string) {
@@ -14,19 +8,17 @@ export const businessService = {
         if (!user) return null
 
         const code = user.emailConfirmation.confirmationCode
-        console.log('User',user)
-        console.log('Code', code)
-
 
         return emailManager.sendRegistrationEmail(email, code)
     },
 
     async resendRegistrationEmail(email: string) {
         const user = await UserQueryRepository.getUserByEmail(email)
-        if (!user) return null
 
-        const code = user.emailConfirmation.confirmationCode
+        if (!user || user.emailConfirmation.isConfirmed) return null
 
-        return emailManager.resendRegistrationEmail(email, code)
+        const newCode = await AuthService.updateCode(email)
+
+        return emailManager.resendRegistrationEmail(email, newCode)
     }
 }

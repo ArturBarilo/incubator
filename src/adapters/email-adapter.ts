@@ -10,14 +10,12 @@ export const emailAdapter = {
                 pass: process.env.PASSWORD_SENDING_EMAIL,
             },
         });
-    
+
         const info = await transporter.sendMail({
             from: 'Artur <sender_app_tg@mail.ru>',
-            // to: email,
-            to: "sanitarfresh@gmail.com",
+            to: email,
             subject: subject,
             html: message,
-            // html: "<b>Hello world?</b>",
           });
 
         return info;

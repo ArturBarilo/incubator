@@ -1,16 +1,12 @@
-import { JWTService } from "../application/jwt-service";
-import { usersCollection } from "../db/db";
-import { UserAccountDb, UserDbWithId } from "../models/user/db/user-db";
-import { CreateUserModel } from "../models/user/input/create-user-model";
-import { userMapper } from "../models/user/mapper/user-mapper";
-import { OutputUserTypeForMe } from "../models/user/output/user-output-model";
-import { UserQueryRepository } from "../repositories/user-query-repository";
-import { UserRepository } from "../repositories/user-repository";
+import {UserAccountDb, UserDbWithId} from "../models/user/db/user-db";
+import {CreateUserModel} from "../models/user/input/create-user-model";
+import {OutputUserTypeForMe} from "../models/user/output/user-output-model";
+import {UserQueryRepository} from "../repositories/user-query-repository";
+import {UserRepository} from "../repositories/user-repository";
 import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
-import { add } from "date-fns/add";
+import {v4 as uuidv4} from "uuid";
+import {add} from "date-fns/add";
 import {businessService} from "../domain/business-service";
-
 
 
 export class AuthService {
@@ -51,19 +47,12 @@ export class AuthService {
 
         if (!user) return false
 
-        if (user.emailConfirmation.confirmationCode !== code) return false
-
-        if (user.emailConfirmation.isConfirmed) return false
-
-        if(user.emailConfirmation.expirationDate < new Date()) return false
-
-        let result = await UserRepository.updateConfirmation(user._id)
-
-        return result
+        return await UserRepository.updateConfirmation(user._id)
     }
 
     static async _generateHash(password: string, salt: string) {
         const hash = await bcrypt.hash(password, salt)
+
         return hash
     }
 
@@ -89,5 +78,12 @@ export class AuthService {
         }
 
         return currentUser
+    }
+
+    static async updateCode(email: string) {
+        const newCode = uuidv4()
+        await UserRepository.updateCodeForResendingEmail(email, newCode)
+
+        return newCode
     }
 }

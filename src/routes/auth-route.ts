@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import {RequestWithBody} from "../common";
 import {LoginInputModel} from "../models/auth/input/login-input-model";
 import {AuthService} from "../services/auth-service";
-import {loginValidation, resendingEmailRegistrationValidation} from "../validators/auth-validators"
+import {codeValidation, loginValidation, resendingEmailRegistrationValidation} from "../validators/auth-validators"
 import { JWTService } from "../application/jwt-service";
 import { jwtAuthMiddleware } from "../middlewares/auth/jwt-auth-middleware"
 import { OutputUserTypeForMe } from "../models/user/output/user-output-model";
@@ -20,12 +20,9 @@ export const authRoute = Router({})
 authRoute.post('/registration', createUserAccountValidation(), async (req: RequestWithBody<CreateUserModel>, res: Response) => {
     const createUserModel: CreateUserModel = req.body
 
-
     const createUser = await AuthService.createUser(createUserModel)
 
     if(!createUser) res.sendStatus(400)
-
-    // await businessService.sendRegistrationEmail(req.body.email)
 
     return res.sendStatus(204)
 })
@@ -38,7 +35,8 @@ authRoute.post('/registration-email-resending', resendingEmailRegistrationValida
     return res.sendStatus(204)
 })
 
-authRoute.post('/registration-confirmation', async (req: Request, res: Response) => {
+
+authRoute.post('/registration-confirmation', codeValidation(), async (req: Request, res: Response) => {
     const result = await AuthService.confirmEmail(req.body.code)
 
     if (result) return res.sendStatus(204)
@@ -49,7 +47,9 @@ authRoute.post('/registration-confirmation', async (req: Request, res: Response)
 authRoute.post('/login', loginValidation(), async (req: RequestWithBody<LoginInputModel>, res: Response) => {
     const { loginOrEmail, password } = req.body
 
+
     const user = await AuthService.login(loginOrEmail, password)
+
 
     if(user) {
         const token = await JWTService.createJWT(user._id.toString())

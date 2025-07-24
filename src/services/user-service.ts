@@ -61,6 +61,8 @@ export class UserService {
 
         if (!user) return null
 
-        return await UserRepository.deleteUser(userId)
+        return await UserRepository.deleteUser(userId)//
     }
+
+
 }

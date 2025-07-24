@@ -11,12 +11,6 @@ export class UserRepository {
         return res.insertedId.toString()
     }
 
-    // static async createUserAccount(createData: UserAccountDb): Promise<string> {
-    //     const res = await usersCollection.insertOne(createData)
-    //
-    //     return res.insertedId.toString()
-    // }
-
     static async updateConfirmation(_id: ObjectId) {
         let result = await usersCollection
             .updateOne({_id}, {$set: {'emailConfirmation.isConfirmed': true}})
@@ -35,7 +29,8 @@ export class UserRepository {
     }
 
     static async findUserByLoginOrEmail(loginOrEmail: string): Promise<WithId<UserAccountDb> | null> {
-        const user = await usersCollection.findOne({ $or: [{ email: loginOrEmail }, { login: loginOrEmail }] })
+        const user = await usersCollection.findOne(
+            { $or: [{ 'accountData.userName': loginOrEmail }, { 'accountData.email': loginOrEmail }] })
 
         if (!user) return null
 
@@ -43,19 +38,25 @@ export class UserRepository {
     }
 
     static async checkingUniqueLogin(login: string): Promise<boolean> {
-        const notUniqueLogin = await usersCollection.findOne({login: login})
+        const checkingUniqueLogin = await usersCollection.findOne(
+            {"accountData.userName": login})
 
-        if(notUniqueLogin) return false
+        if(checkingUniqueLogin) return false
 
         return true
     }
 
     static async checkingUniqueEmail(email: string): Promise<boolean> {
-        const checkingUniqueEmail = await usersCollection.findOne({"accountData.email": email})// accountData.email
-        console.log("checkingUniqueEmail", checkingUniqueEmail)
+        const checkingUniqueEmail = await usersCollection.findOne({"accountData.email": email})
 
         if(checkingUniqueEmail) return false
 
         return true
+    }
+
+    static async updateCodeForResendingEmail(email: string, newCode: string) {
+        let result = await usersCollection
+            .updateOne({"accountData.email": email}, {$set: {'emailConfirmation.confirmationCode': newCode}})
+        return result.modifiedCount === 1
     }
 }
