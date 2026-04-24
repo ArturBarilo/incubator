@@ -39,7 +39,8 @@ export class AuthService {
 
         await businessService.sendRegistrationEmail(email)
 
-        return true
+        // return true
+        return newUser
     }
 
     static async confirmEmail(code: string) {
@@ -61,7 +62,7 @@ export class AuthService {
 
         if (!user) return false
 
-        if (!user.emailConfirmation.isConfirmed) return false
+        // if (!user.emailConfirmation.isConfirmed) return false
 
         const checkingPassword = await bcrypt.compare(password, user.accountData.password)
 

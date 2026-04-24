@@ -9,11 +9,12 @@ dotenv.config()
 
 export const port = 3001
 
+
 const uri = process.env.MONGO_URL || 'mongodb://localhost:27017'
 
 const client = new MongoClient(uri)
 
-console.log(`Mongodb start on ${process.env.MONGO_URL}`)
+console.log(`Mongodb start on ${process.env.MONGO_URL} from db.ts`)
 
 export const database = client.db('blogs-db')
 
@@ -29,7 +30,7 @@ export const runDb = async () => {
     try {
         await client.connect()
 
-        console.log('Client connect to DB')
+        console.log('Client connect to DB!!!!!!!!!!!!!')
         console.log(`App listen on port: ${port}`)
     }catch(e){
         console.log(e)
@@ -37,4 +38,12 @@ export const runDb = async () => {
         await client.close()
     }
 
+}
+
+export async function stopDb() {
+    if (!client) {
+        throw new Error('No active client');
+    }
+
+    await client.close();
 }

@@ -47,9 +47,7 @@ authRoute.post('/registration-confirmation', codeValidation(), async (req: Reque
 authRoute.post('/login', loginValidation(), async (req: RequestWithBody<LoginInputModel>, res: Response) => {
     const { loginOrEmail, password } = req.body
 
-
     const user = await AuthService.login(loginOrEmail, password)
-
 
     if(user) {
         const token = await JWTService.createJWT(user._id.toString())
@@ -62,7 +60,6 @@ authRoute.post('/login', loginValidation(), async (req: RequestWithBody<LoginInp
 
 authRoute.get('/me', jwtAuthMiddleware, async (req: Request, res: Response)=> {
     const currentUser = AuthService.getInfoAboutCurrentUser(req.user)
-
     return res.status(200).send(currentUser)
 })
 
